@@ -1,50 +1,55 @@
 # Phys-R1: Physically Grounded Video Reasoning
 
 <p align="center">
-    <a href="https://your-project-page.github.io/">项目主页</a> | 
-    <a href="https://arxiv.org/abs/xxxx.xxxx">论文原文</a> | 
-    <a href="https://huggingface.co/models">模型权重</a> | 
-    <a href="#dataset">数据集</a>
+    <img src="https://img.shields.io/badge/Task-Video--Reasoning-red" alt="Task">
+    <img src="https://img.shields.io/badge/Framework-Decoupled--Simulation-blue" alt="Framework">
+    <img src="https://img.shields.io/badge/Method-GRPO--Gaussian-green" alt="Method">
+    <img src="https://img.shields.io/badge/Status-ICML--2026-orange" alt="Status">
 </p>
 
----
-
-## 🌟 核心亮点
-
-**Phys-R1** 是一个旨在提升大型多模态模型（LMMs）物理推理能力的解耦框架。
-
-- **解耦的 Grounder-Verifier 架构**: Policy 模型 (Grounder) 生成结构化的物理参数假设，物理模拟器 (Verifier) 提供精确反馈。
-- **Gaussian-Kernel GRPO**: 针对连续物理参数（质量、摩擦力、初速度）优化的强化学习算法，有效解决奖励稀疏问题。
-- **潜空间动力学对齐 (Latent Dynamics Alignment)**: 确保生成的推理链与真实物理规律严格一致。
-- **结构化输出**: 模型不仅给出答案，还会输出包含物理参数的 `<json>` 代码块。
+**Phys-R1** is a physically grounded reasoning framework that extends Large Multimodal Models (LMMs) beyond "visual intuition." By externalizing latent physical variables (mass, friction, velocity) and aligning them with a physics simulator, Phys-R1 achieves robust, verifiable reasoning in dynamic scenes.
 
 ---
 
-## 📽️ 效果展示 (Demos)
-
-| 物理碰撞预测 (Collision Prediction) | 轨迹追踪与推理 (Trajectory Reasoning) |
-| :---: | :---: |
-| ![Demo 1](https://via.placeholder.com/400x225?text=Video+Demo+1) | ![Demo 2](https://via.placeholder.com/400x225?text=Video+Demo+2) |
-| *模型推断出绿色球体的质量并预测碰撞时间* | *模型根据摩擦力推断物体的停止位置* |
+## 🚀 News
+* **[2026.01]** Phys-R1 paper submitted to ICML 2026.
+* **[2026.01]** Release of the Phys-R1 codebase and Gaussian-Kernel GRPO implementation.
 
 ---
 
-## 🛠️ 框架架构 (Methodology)
+## 💡 Key Contributions
 
-
-
-Phys-R1 通过将物理参数显式化，使模型从“视觉直觉”转向“原理解析”。
+- **Decoupled Grounder-Verifier Pipeline**: Moves away from end-to-end black-box guessing. The **Grounder** (Policy) proposes structured physical hypotheses, while the **Verifier** (Simulator) provides deterministic feedback.
+- **Gaussian-Kernel GRPO**: A novel reinforcement learning objective designed for **continuous physical parameters**, solving the sparse reward problem in complex dynamics.
+- **Latent Dynamics Alignment**: A specialized training objective that ensures the model's internal Chain-of-Thought (CoT) matches the actual physical laws of the environment.
+- **Structured JSON Reasoning**: Models explicitly output `<json>` blocks containing estimated physical properties, making the reasoning process fully interpretable.
 
 ---
 
-## 🚀 快速开始
+## 🛠️ Architecture
 
-### 1. 环境准备
+![Architecture](https://via.placeholder.com/1000x400?text=Phys-R1+Framework+Diagram:+Grounder+->+JSON+->+Simulator+->+Reward)
+
+1.  **Video Input**: Raw frames of a dynamic scene.
+2.  **Reasoning (CoT)**: The model "thinks" about forces, masses, and friction.
+3.  **Parameter Extraction**: Outputs a structured JSON (e.g., `{"mass": 0.5, "friction": 0.2}`).
+4.  **Verification**: A physics engine (PyBullet/MuJoCo) simulates the hypothesis.
+5.  **Alignment**: Feedback loop via Gaussian-Kernel GRPO to refine predictions.
+
+---
+
+## 📦 Installation
+
 ```bash
-# 克隆仓库
+# Clone the repo
 git clone [https://github.com/your-username/Phys-R1.git](https://github.com/your-username/Phys-R1.git)
 cd Phys-R1
 
-# 安装依赖
+# Create environment
+conda create -n physr1 python=3.10
+conda activate physr1
+
+# Install dependencies
 pip install -r requirements.txt
-# 建议安装 PyBullet 或 MuJoCo 作为模拟器后端
+# Requires a physics backend
+pip install pybullet mujoco
